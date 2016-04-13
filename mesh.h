@@ -43,6 +43,7 @@ namespace Mesh
 	// typedef Edge< float, 3> Edge3Df;
 	typedef Edge< double, 3> Edge3Dd;
 	
+	extern int face_total, left_face;
 	extern const char* outfile;
 	extern int iterate_time;
 	extern std::vector<Vertex3Dd*> dian;

@@ -13,6 +13,7 @@ using Mesh::Mat44d;
 auto& dian = Mesh::dian;
 auto& bian = Mesh::bian;
 auto& face_edge = Mesh::face_edge;
+auto& face_total = Mesh::face_total;
 
 #define fec_(x, y) face_edge.count(make_pair(x, y))
 #define fe_(x, y) face_edge[make_pair(x, y)]
@@ -72,6 +73,7 @@ void readin(char** argv)
 				dian.push_back(new Vertex3Dd(x, y, z));
 			}
 			else if (ch == 'f'){	//	face
+				face_total++;
 				int a, b, c;
 				fin >> a >> b >> c;
 				a--;
@@ -108,7 +110,8 @@ void readin(char** argv)
 		}
 	}
 	fin.close();
-	Mesh::iterate_time = dian.size() * (1 - atof(argv[3]));
+	//Mesh::iterate_time = dian.size() * (1 - atof(argv[3]));
+	Mesh::left_face = face_total * atof(argv[3]);
 	//cout << "vertex number: " << dian.size() << " , edge number: " << bian.size() << " face number: " << face.size() 
 		//<< " rate & iterate_time: " << Mesh::iterate_time << endl;
 }

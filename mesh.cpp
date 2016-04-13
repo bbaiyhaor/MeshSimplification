@@ -62,7 +62,7 @@ namespace Mesh
 	using dui = std::priority_queue<T, vector<T>, EdgeCompare >;
 	
 	
-	
+	int face_total, left_face;
 	const char* outfile;
 	vector<Vertex3Dd*> dian;
 	vector<Edge3Dd*> bian;
@@ -223,7 +223,13 @@ namespace Mesh
 		#ifdef DEBUG
 		int flag = 0;
 		#endif
-		vector< Vertex3Dd* >& adjacency = lhs->holdAdjacency();			
+		vector< Vertex3Dd* >& adjacency = lhs->holdAdjacency();		
+		//	update the face numbers
+		for (Vertex3Dd*& elem : adjacency){
+			if (isExist(elem->getPoint(), rhsp))
+				face_total--;
+		}
+
 		for (Vertex3Dd*& elem : adjacency){
 			if (elem == rhs){
 				#ifdef DEBUG
@@ -360,7 +366,8 @@ namespace Mesh
 	void simplify()
 	{
 		build_priority();
-		while (iterate_time--)
+//		while (iterate_time--)
+		while (left_face < face_total)
 			iterate_update();
 		print();
 	}
