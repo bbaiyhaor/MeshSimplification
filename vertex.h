@@ -5,6 +5,8 @@
 #include "point.h"
 #include "matrix.h"
 #include <vector>
+#include <algorithm>
+#include <cmath>
 
 template< typename T, int nDimensions >
 class Mesh::Vertex
@@ -34,15 +36,21 @@ public:
 		//	lx+my+nz+k=0
 		//	px+qy+rz+s=0
 		D = (a*m*r+b*p*n+c*l*q)-(a*n*q+b*l*r+c*m*p);
-		// const double CD = 1000000;
-		// D = D * CD;
-		// x = ((b*r*k+c*m*s+d*n*q)-(b*n*s+c*q*k+d*m*r))/D*CD;
-		// y = ((a*n*s+c*p*k+d*l*r)-(a*r*k+c*l*s+d*n*p))/D*CD;
-		// z = ((a*q*k+b*l*s+d*m*p)-(a*m*s+b*p*k+d*l*q))/D*CD;
-		
+		if (fabs(D) < 1e-300){
+			D = 1e-300;
+			x = ((b*r*k+c*m*s+d*n*q)-(b*n*s+c*q*k+d*m*r))/D;
+			y = ((a*n*s+c*p*k+d*l*r)-(a*r*k+c*l*s+d*n*p))/D;
+			z = ((a*q*k+b*l*s+d*m*p)-(a*m*s+b*p*k+d*l*q))/D;
+
+			point[0] = x;
+			point[1] = y;
+			point[2] = z;
+			return std::numeric_limits<double>::infinity();
+		}
 		x = ((b*r*k+c*m*s+d*n*q)-(b*n*s+c*q*k+d*m*r))/D;
 		y = ((a*n*s+c*p*k+d*l*r)-(a*r*k+c*l*s+d*n*p))/D;
 		z = ((a*q*k+b*l*s+d*m*p)-(a*m*s+b*p*k+d*l*q))/D;
+		
 		point[0] = x;
 		point[1] = y;
 		point[2] = z;

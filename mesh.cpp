@@ -112,7 +112,11 @@ namespace Mesh
 		cur->newCdd();
 		Vertex3Dd& candidate = cur->holdCdd();
 		candidate.holdMat() = cur->getLhsv().getMat() + cur->getRhsv().getMat();
-		cur->holdError() = candidate.figurePoint();					
+		cur->holdError() = candidate.figurePoint();		
+		#ifdef HUGENUM
+		if (cur->getError() > 10)
+			cout << "&&&&    " << cur->getError() << "&&&&" << endl;		
+		#endif
 	}
 
 	void build_priority()
@@ -214,6 +218,10 @@ namespace Mesh
 	
 	void delEdge(Edge3Dd* cur)
 	{
+		#ifdef HUGENUM
+		if (cur->getError() > 10)
+			cout << "***    " << cur->getError() << "*****" << endl;
+		#endif
 		Vertex3Dd *lhs = cur->reLhsv();
 		const Point3Dd& lhsp = lhs->getPoint();
 		Vertex3Dd *rhs = cur->reRhsv();
@@ -317,9 +325,9 @@ namespace Mesh
 			Edge3Dd* first = graph.top();
 			graph.pop();
 			if (first->exist){
-					stop_flag = 0;
-					addEdge(first);
-					delEdge(first);
+				stop_flag = 0;
+				addEdge(first);
+				delEdge(first);
 			}
 			else 
 			{
@@ -333,6 +341,18 @@ namespace Mesh
 		FILE* of = fopen(outfile, "w");
 		map<Vertex3Dd*, int> order;
 		int number = 1;
+		#ifdef HUGENUM
+		int realt = 0;
+		while (! graph.empty()){
+			Edge3Dd* first = graph.top();
+			graph.pop();
+			if (first->exist)
+				realt++;
+			if (first->getError()>10)
+				cout << first->getError() << " lala	" << first->exist << endl;
+		}
+		fprintf(of, "%d %d\n", realt, face_edge.size());
+		#endif
 		for (auto& elem : face_edge){
 			//if (elem.second->exist == false)
 				//continue;
